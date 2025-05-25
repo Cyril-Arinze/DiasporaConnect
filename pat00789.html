@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Invoice</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: #f4f7fa;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        background-color: #1d4ed8;
+        color: white;
+        padding: 1rem 1.5rem;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+      .container {
+        max-width: 800px;
+        width: 90%;
+        margin: 2rem auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        box-sizing: border-box;
+      }
+
+      /* Patient Info Card */
+      .patient-info {
+        background-color: #eef6ff;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .patient-info .details {
+        font-size: 1rem;
+        color: #1d4ed8;
+      }
+      .patient-info .details span {
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+      .patient-info .invoice-meta {
+        text-align: right;
+      }
+      .invoice-number {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #2563eb;
+      }
+      .invoice-date {
+        font-size: 0.9rem;
+        color: #555;
+      }
+
+      .invoice-title {
+        text-align: center;
+        color: #1d4ed8;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+      .table-container {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+        margin-bottom: 1rem;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 0.75rem;
+        text-align: left;
+      }
+      th {
+        background-color: #1d4ed8;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      /* Color-coded status badges */
+      .status-completed {
+        color: #16a34a;
+        font-weight: bold;
+      }
+      .status-ongoing {
+        color: #2563eb;
+        font-weight: bold;
+      }
+      .status-scheduled {
+        color: #dc2626;
+        font-weight: bold;
+      }
+
+      .total-due {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+        flex-wrap: wrap;
+      }
+      .total-due span {
+        margin-top: 0.5rem;
+      }
+      .pay-button {
+        display: block;
+        background-color: #1d4ed8;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 200px;
+        transition: background-color 0.3s ease;
+      }
+      .pay-button:hover {
+        background-color: #163eb5;
+      }
+      
+  /* Shared Header Styles */
+  .shared-header * {
+    box-sizing: border-box;
+  }
+  .shared-header {
+    background-color: #1d4ed8;
+    color: white;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    font-family: sans-serif;
+  }
+  .shared-header .nav-left {
+    display: flex;
+    align-items: center;
+  }
+  .shared-header .back-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    margin-right: 0.75rem;
+    cursor: pointer;
+  }
+  .shared-header .back-btn:hover {
+    text-decoration: underline;
+  }
+  .shared-header h1 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  .shared-header h1 a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .shared-header .nav-right {
+    display: flex;
+    align-items: center;
+  }
+  .shared-header .user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .shared-header .user-icon {
+    font-size: 1.25rem;
+  }
+  .shared-header .user-name {
+    font-weight: bold;
+  }
+  .shared-header .wallet-balance {
+    background-color: #eef6ff;
+    color: #1d4ed8;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  /* Hamburger & dropdown */
+  .shared-header .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-left: 1rem;
+  }
+  .shared-header .dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 1rem;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    width: 200px;
+    z-index: 10;
+  }
+  .shared-header .dropdown-content {
+    display: flex;
+    flex-direction: column;
+  }
+  .shared-header .dropdown-content button,
+  .shared-header .dropdown-content .dropdown-item {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #1d4ed8;
+    cursor: pointer;
+  }
+  .shared-header .dropdown-content button:hover,
+  .shared-header .dropdown-content .dropdown-item:hover {
+    background-color: #eef6ff;
+  }
+  .shared-header .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .shared-header .user-info {
+      display: none;
+    }
+    .shared-header .hamburger {
+      display: block;
+    }
+  }
+  @media (max-width: 480px) {
+    .shared-header h1 {
+      font-size: 1.1rem;
+    }
+  }
+
+
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 1.25rem;
+        }
+        .container {
+          padding: 1rem;
+          margin: 1rem auto;
+          width: 95%;
+        }
+        .patient-info {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .patient-info .invoice-meta {
+          text-align: left;
+          margin-top: 0.5rem;
+        }
+        .invoice-title {
+          font-size: 1.25rem;
+        }
+        th,
+        td {
+          padding: 0.5rem;
+          font-size: 0.9rem;
+        }
+        .total-due {
+          justify-content: center;
+          font-size: 1rem;
+        }
+      }
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 1rem;
+        }
+        .invoice-title {
+          font-size: 1rem;
+        }
+        th,
+        td {
+          padding: 0.4rem;
+          font-size: 0.8rem;
+        }
+        .total-due {
+          font-size: 0.95rem;
+          margin-bottom: 1rem;
+        }
+        .pay-button {
+          max-width: 100%;
+          font-size: 0.95rem;
+          padding: 0.65rem 1rem;
+        }
+      }
+      @media (max-width: 320px) {
+        .container {
+          padding: 1rem 0.75rem;
+          margin: 1rem auto;
+        }
+        .invoice-title {
+          font-size: 0.9rem;
+          margin-bottom: 0.75rem;
+        }
+        th,
+        td {
+          padding: 0.3rem 0.4rem;
+          font-size: 0.75rem;
+        }
+        .total-due {
+          font-size: 0.9rem;
+          justify-content: center;
+        }
+        .pay-button {
+          padding: 0.6rem 0.9rem;
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shared-header">
+  <div class="nav-left">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1><a href="index.html">Diaspora Health Connect</a></h1>
+  </div>
+  <div class="nav-right">
+    <div class="user-info">
+      <span class="user-icon">👤</span>
+      <span class="user-name">John Doe</span>
+      <span class="wallet-balance">$1,750.00</span>
+    </div>
+    <button class="hamburger" aria-label="Menu">☰</button>
+  </div>
+  <div class="dropdown">
+    <div class="dropdown-content">
+      <button onclick="history.back()">← Back</button>
+      <div class="dropdown-item">
+        <span class="user-icon">👤</span>
+        <span>John Doe</span>
+      </div>
+      <div class="dropdown-item">
+        <span>Wallet:</span>
+        <span class="wallet-balance">$1,750.00</span>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="container">
+      <!-- Patient Information -->
+      <div class="patient-info">
+        <div class="details">
+          <span><strong>Patient Name:</strong> Fatou Diallo</span>
+          <span><strong>Patient ID:</strong> #00789</span>
+          <span><strong>Condition:</strong> Fracture (Right Arm)</span>
+        </div>
+        <div class="invoice-meta">
+          <div class="invoice-number">Invoice #: INV-1003</div>
+          <div class="invoice-date">Date: 2025-05-15</div>
+        </div>
+      </div>
+
+      <div class="invoice-title">Detailed Cost Breakdown</div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Service / Treatment</th>
+              <th>Cost (USD)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Initial Consultation & X-Ray</td>
+              <td>$150.00</td>
+              <td class="status-completed">✅ Completed</td>
+            </tr>
+            <tr>
+              <td>Pre-Surgery Lab Tests</td>
+              <td>$200.00</td>
+              <td class="status-completed">✅ Completed</td>
+            </tr>
+            <tr>
+              <td>Surgical Procedure (OR + Anesthesia)</td>
+              <td>$1,000.00</td>
+              <td class="status-ongoing">🔵 Ongoing</td>
+            </tr>
+            <tr>
+              <td>Post-Op Medication & Dressing</td>
+              <td>$150.00</td>
+              <td class="status-scheduled">❗ Scheduled</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="total-due">
+        <span><strong>Total Due:</strong> $1,300.00</span>
+      </div>
+      <a href="successful.html" style="text-decoration: none">
+        <button class="pay-button">Proceed to Payment</button>
+      </a>
+    </div>
+    <script>
+  // Shared Header Script
+  document.addEventListener("DOMContentLoaded", function () {
+    const hamburger = document.querySelector(".shared-header .hamburger");
+    const dropdown = document.querySelector(".shared-header .dropdown");
+
+    hamburger.addEventListener("click", () => {
+      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+    });
+
+    // Close dropdown if clicking outside
+    window.addEventListener("click", (e) => {
+      if (
+        !hamburger.contains(e.target) &&
+        !dropdown.contains(e.target)
+      ) {
+        dropdown.style.display = "none";
+      }
+    });
+  });</script>
+
+  </body>
+</html>

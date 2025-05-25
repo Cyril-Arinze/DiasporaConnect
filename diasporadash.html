@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diaspora Dashboard</title>
+    <style>
+      /* Base */
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: sans-serif;
+        background-color: #f4f7fa;
+        margin: 0;
+        padding: 0.5rem;
+      }
+
+      /* Header */
+      .header {
+        background-color: #1d4ed8;
+        color: white;
+        padding: 0.75rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+      }
+      .nav-left {
+        display: flex;
+        align-items: center;
+      }
+      .back-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1rem;
+        margin-right: 0.75rem;
+        cursor: pointer;
+      }
+      .back-btn:hover {
+        text-decoration: underline;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+      .header h1 a {
+        color: white;
+        text-decoration: none;
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+      .user-icon {
+        font-size: 1.25rem;
+      }
+      .user-name {
+        font-weight: bold;
+      }
+      .wallet-balance {
+        background-color: #eef6ff;
+        color: #1d4ed8;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+
+      /* Hamburger & dropdown */
+      .hamburger {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        margin-left: 1rem;
+      }
+      .dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 1rem;
+        background-color: white;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        width: 200px;
+        z-index: 10;
+      }
+      .dropdown-content {
+        display: flex;
+        flex-direction: column;
+      }
+      .dropdown-content button,
+      .dropdown-content .dropdown-item {
+        background: none;
+        border: none;
+        width: 100%;
+        text-align: left;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        color: #1d4ed8;
+        cursor: pointer;
+      }
+      .dropdown-content button:hover,
+      .dropdown-content .dropdown-item:hover {
+        background-color: #eef6ff;
+      }
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* Dashboard Title */
+      h2 {
+        text-align: center;
+        color: #1d4ed8;
+        margin: 1rem 0;
+        font-size: 1.25rem;
+      }
+
+      /* Table */
+      .dashboard {
+        max-width: 100%;
+        margin: 0 auto 1rem;
+        padding: 1rem;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 0.75rem;
+        text-align: left;
+        font-size: 0.9rem;
+      }
+      th {
+        background-color: #1d4ed8;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      tr.clickable-row {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+      tr.clickable-row:hover {
+        background-color: #e0e7ff;
+      }
+
+      .status-completed {
+        color: #16a34a;
+        font-weight: bold;
+      }
+      .status-ongoing {
+        color: #2563eb;
+        font-weight: bold;
+      }
+      .status-pending {
+        color: #dc2626;
+        font-weight: bold;
+      }
+
+      .payment-btn {
+        display: block;
+        background-color: #1d4ed8;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        margin: 2rem auto 0;
+      }
+      .payment-btn:hover {
+        background-color: #163eb5;
+        transform: scale(1.05);
+      }
+
+      /* Responsive */
+      @media (min-width: 480px) {
+        .header h1 {
+          font-size: 1.5rem;
+        }
+        h2 {
+          font-size: 1.5rem;
+        }
+        th,
+        td {
+          font-size: 1rem;
+        }
+        .dashboard {
+          max-width: 90%;
+          margin: 2rem auto;
+          padding: 1.5rem;
+        }
+      }
+      @media (min-width: 768px) {
+        h2 {
+          font-size: 1.75rem;
+        }
+        table {
+          min-width: 100%;
+        }
+      }
+      @media (max-width: 768px) {
+        .user-info {
+          display: none;
+        }
+        .hamburger {
+          display: block;
+        }
+      }
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 1.1rem;
+        }
+        h2 {
+          font-size: 1.1rem;
+        }
+        th,
+        td {
+          padding: 0.5rem;
+          font-size: 0.8rem;
+        }
+        .payment-btn {
+          font-size: 0.9rem;
+          padding: 0.6rem 1rem;
+        }
+      }
+      @media (max-width: 320px) {
+        th,
+        td {
+          padding: 0.4rem;
+          font-size: 0.75rem;
+        }
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Row click navigation (patient-specific page)
+        document.querySelectorAll("tr.clickable-row").forEach((row) => {
+          row.addEventListener("click", () => {
+            const patientId = row.getAttribute("data-id");
+            window.location.href = `pat${patientId}.html`;
+          });
+        });
+
+        // Hamburger menu toggle
+        const hamburger = document.querySelector(".hamburger");
+        const dropdown = document.querySelector(".dropdown");
+        hamburger.addEventListener("click", () => {
+          dropdown.style.display =
+            dropdown.style.display === "flex" ? "none" : "flex";
+        });
+        // Close dropdown if clicked outside
+        window.addEventListener("click", (e) => {
+          if (
+            !hamburger.contains(e.target) &&
+            !dropdown.contains(e.target)
+          ) {
+            dropdown.style.display = "none";
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="header">
+      <div class="nav-left">
+        <button class="back-btn" onclick="history.back()">← Back</button>
+        <h1><a href="index.html">Diaspora Health Connect</a></h1>
+      </div>
+      <div class="nav-right">
+        <div class="user-info">
+          <span class="user-icon">👤</span>
+          <span class="user-name">John Doe</span>
+          <span class="wallet-balance">$1,750.00</span>
+        </div>
+        <button class="hamburger">&#9776;</button>
+      </div>
+      <div class="dropdown">
+        <div class="dropdown-content">
+          <button onclick="history.back()">← Back</button>
+          <div class="dropdown-item">
+            <span class="user-icon">👤</span>
+            <span>John Doe</span>
+          </div>
+          <div class="dropdown-item">
+            <span>Wallet:</span>
+            <span class="wallet-balance">$1,750.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>Patient Medical Records</h2>
+    <div class="dashboard">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Patient ID</th>
+            <th>Patient Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="clickable-row" data-id="00123">
+            <td>2025-05-01</td>
+            <td>#00123</td>
+            <td>Mary Johnson</td>
+            <td class="status-completed">✅ Completed</td>
+          </tr>
+          <tr class="clickable-row" data-id="00456">
+            <td>2025-05-03</td>
+            <td>#00456</td>
+            <td>David Kimani</td>
+            <td class="status-ongoing">🔵 Ongoing</td>
+          </tr>
+          <tr class="clickable-row" data-id="00789">
+            <td>2025-05-10</td>
+            <td>#00789</td>
+            <td>Fatou Diallo</td>
+            <td class="status-pending">❗ Pending</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="text-align: center">
+      <button class="payment-btn" onclick="location.href='payment.html'">
+        💳 Make Payment
+      </button>
+    </div>
+  </body>
+</html>

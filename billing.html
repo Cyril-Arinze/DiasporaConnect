@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Billing Upload - One Patient</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background-color: #f4f7fa;
+        padding: 1rem;
+      }
+
+      .header {
+        background-color: #1d4ed8;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+      }
+
+      h2 {
+        text-align: center;
+        color: #1d4ed8;
+        margin-bottom: 1rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.3rem;
+        font-weight: bold;
+        color: #333;
+      }
+
+      input[type="text"],
+      input[type="date"],
+      input[type="number"] {
+        width: 100%;
+        padding: 0.6rem;
+        margin-bottom: 1rem;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      input[disabled] {
+        background-color: #e9ecef;
+        color: #6c757d;
+        cursor: not-allowed;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+      }
+
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 0.6rem;
+        text-align: left;
+        font-size: 1rem;
+      }
+
+      th {
+        background-color: #e6f0ff;
+        color: #1d4ed8;
+      }
+
+      .btn {
+        background-color: #1d4ed8;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #163db0;
+      }
+
+      .add-row {
+        margin-bottom: 1.5rem;
+        text-align: right;
+      }
+
+      /* Responsive for <= 600px */
+      @media (max-width: 600px) {
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+        }
+
+        th {
+          display: none;
+        }
+
+        td {
+          border: none;
+          border-bottom: 1px solid #eee;
+          position: relative;
+          padding-left: 50%;
+          margin-bottom: 1rem;
+          font-size: 0.9rem;
+        }
+
+        td::before {
+          position: absolute;
+          top: 0.5rem;
+          left: 0.75rem;
+          width: 45%;
+          white-space: nowrap;
+          font-weight: bold;
+          color: #1d4ed8;
+          font-size: 0.9rem;
+        }
+
+        td:nth-of-type(1)::before {
+          content: "Service/Item";
+        }
+        td:nth-of-type(2)::before {
+          content: "Amount (USD)";
+        }
+      }
+
+      /* Further scale fonts and padding for 480px and below */
+      @media (max-width: 480px) {
+        body {
+          padding: 0.75rem;
+        }
+        .container {
+          margin: 1rem auto;
+          padding: 1rem;
+          border-radius: 6px;
+        }
+        h2 {
+          font-size: 1.5rem;
+          margin-bottom: 0.8rem;
+        }
+        label {
+          font-size: 0.95rem;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="number"] {
+          font-size: 0.9rem;
+          padding: 0.5rem;
+        }
+        .btn {
+          font-size: 0.95rem;
+          padding: 0.65rem 1.2rem;
+        }
+      }
+
+      /* Smallest devices: 320px */
+      @media (max-width: 320px) {
+        body {
+          padding: 0.5rem;
+        }
+        .header {
+          padding: 0.75rem 0.5rem;
+        }
+        .header h1 {
+          font-size: 1.25rem;
+          margin-bottom: 0.25rem;
+        }
+        .header p {
+          font-size: 0.85rem;
+          margin: 0;
+        }
+        .container {
+          margin: 0.5rem auto;
+          padding: 0.75rem 1rem;
+          max-width: 100%;
+          border-radius: 6px;
+        }
+        h2 {
+          font-size: 1.25rem;
+        }
+        label {
+          font-size: 0.85rem;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="number"] {
+          font-size: 0.85rem;
+          padding: 0.4rem;
+        }
+        .btn {
+          font-size: 0.9rem;
+          padding: 0.6rem 1rem;
+        }
+        table td {
+          font-size: 0.85rem;
+          padding-left: 45%;
+        }
+        td::before {
+          font-size: 0.85rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      onclick="location.href='index.html'"
+      class="header"
+      role="button"
+      tabindex="0"
+      aria-label="Go to home page"
+    >
+      <h1>Diaspora Health Connect</h1>
+      <p>Billing Upload (Single Patient)</p>
+    </div>
+
+    <div class="container">
+      <h2>Patient Billing Form</h2>
+      <form id="billingForm" novalidate>
+        <label for="patientRef">Patient Reference Number</label>
+        <input
+          type="text"
+          id="patientRef"
+          name="patientRef"
+          value="#12345"
+          disabled
+        />
+        <input type="hidden" name="patientRef" value="#12345" />
+
+        <label for="patientName">Patient Name</label>
+        <input
+          type="text"
+          id="patientName"
+          name="patientName"
+          value="John Smith"
+          disabled
+        />
+        <input type="hidden" name="patientName" value="John Doe" />
+
+        <label for="sponsorId">Diaspora Sponsor ID</label>
+        <input
+          type="text"
+          id="sponsorId"
+          name="sponsorId"
+          value="DSP-98765"
+          disabled
+        />
+        <input type="hidden" name="sponsorId" value="DSP-98765" />
+
+        <label for="condition">Condition Treated For</label>
+        <input
+          type="text"
+          id="condition"
+          name="condition"
+          placeholder="e.g. Malaria, Fracture"
+          required
+        />
+
+        <label for="serviceDate">Date of Service</label>
+        <input type="date" id="serviceDate" name="serviceDate" required />
+
+        <h3 style="color: #1d4ed8">Cost Breakdown</h3>
+        <table id="costTable">
+          <thead>
+            <tr>
+              <th>Service/Item</th>
+              <th>Amount (USD)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  name="item[]"
+                  placeholder="Consultation"
+                  required
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  name="amount[]"
+                  placeholder="50"
+                  required
+                  min="0"
+                  step="0.01"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="add-row">
+          <button type="button" class="btn" onclick="addCostRow()">
+            + Add Cost Item
+          </button>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%">
+          Upload Billing Data
+        </button>
+      </form>
+    </div>
+
+    <script>
+      function addCostRow() {
+        const tbody = document.querySelector("#costTable tbody");
+        const newRow = document.createElement("tr");
+
+        newRow.innerHTML = `
+          <td><input type="text" name="item[]" placeholder="e.g. X-Ray, Medication" required /></td>
+          <td><input type="number" name="amount[]" placeholder="0.00" required min="0" step="0.01" /></td>
+        `;
+
+        tbody.appendChild(newRow);
+      }
+
+      document
+        .getElementById("billingForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          alert("Billing data uploaded successfully!");
+        });
+    </script>
+  </body>
+</html>

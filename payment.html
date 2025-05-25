@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment & Invoice</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: #f4f7fa;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        background-color: #1d4ed8;
+        color: white;
+        padding: 1rem 1.5rem;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+      .container {
+        max-width: 800px;
+        width: 90%;
+        margin: 2rem auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        box-sizing: border-box;
+      }
+      .wallet {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #eef6ff;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
+      .wallet-balance {
+        font-size: 1.25rem;
+        color: #1d4ed8;
+        font-weight: bold;
+      }
+      .wallet button {
+        margin-top: 0.5rem;
+        background-color: #1d4ed8;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      .wallet button:hover {
+        background-color: #163eb5;
+      }
+      .invoice-title {
+        text-align: center;
+        color: #1d4ed8;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+      .table-container {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+        margin-bottom: 1rem;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 0.75rem;
+        text-align: left;
+      }
+      th {
+        background-color: #1d4ed8;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      tr.clickable-row {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+      tr.clickable-row:hover {
+        background-color: #e0e7ff;
+      }
+      .status-paid {
+        color: #16a34a;
+        font-weight: bold;
+      }
+      .status-pending {
+        color: #2563eb;
+        font-weight: bold;
+      }
+      .status-unpaid {
+        color: #dc2626;
+        font-weight: bold;
+      }
+      .total-due {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+        flex-wrap: wrap;
+      }
+      .total-due span {
+        margin-top: 0.5rem;
+      }
+      .pay-button {
+        display: block;
+        background-color: #1d4ed8;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 200px;
+        transition: background-color 0.3s ease;
+      }
+      .pay-button:hover {
+        background-color: #163eb5;
+      }
+      
+  /* Shared Header Styles */
+  .shared-header * {
+    box-sizing: border-box;
+  }
+  .shared-header {
+    background-color: #1d4ed8;
+    color: white;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    font-family: sans-serif;
+  }
+  .shared-header .nav-left {
+    display: flex;
+    align-items: center;
+  }
+  .shared-header .back-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    margin-right: 0.75rem;
+    cursor: pointer;
+  }
+  .shared-header .back-btn:hover {
+    text-decoration: underline;
+  }
+  .shared-header h1 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  .shared-header h1 a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .shared-header .nav-right {
+    display: flex;
+    align-items: center;
+  }
+  .shared-header .user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .shared-header .user-icon {
+    font-size: 1.25rem;
+  }
+  .shared-header .user-name {
+    font-weight: bold;
+  }
+  .shared-header .wallet-balance {
+    background-color: #eef6ff;
+    color: #1d4ed8;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  /* Hamburger & dropdown */
+  .shared-header .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-left: 1rem;
+  }
+  .shared-header .dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 1rem;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    width: 200px;
+    z-index: 10;
+  }
+  .shared-header .dropdown-content {
+    display: flex;
+    flex-direction: column;
+  }
+  .shared-header .dropdown-content button,
+  .shared-header .dropdown-content .dropdown-item {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #1d4ed8;
+    cursor: pointer;
+  }
+  .shared-header .dropdown-content button:hover,
+  .shared-header .dropdown-content .dropdown-item:hover {
+    background-color: #eef6ff;
+  }
+  .shared-header .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+      /* Responsive styles */
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 1.25rem;
+        }
+        .container {
+          padding: 1rem 1rem;
+          margin: 1rem auto;
+          width: 95%;
+        }
+        .wallet {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .wallet-balance {
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
+        }
+        .wallet button {
+          width: 100%;
+          margin-top: 0;
+        }
+        table {
+          min-width: 100%;
+        }
+        th,
+        td {
+          padding: 0.5rem;
+          font-size: 0.9rem;
+        }
+        .invoice-title {
+          font-size: 1.25rem;
+        }
+        .total-due {
+          justify-content: center;
+          font-size: 1rem;
+        }
+      }
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 1rem;
+        }
+        .invoice-title {
+          font-size: 1rem;
+        }
+        th,
+        td {
+          padding: 0.4rem;
+          font-size: 0.8rem;
+        }
+        .wallet {
+          padding: 0.75rem;
+        }
+        .wallet-balance {
+          font-size: 0.95rem;
+        }
+        .pay-button {
+          max-width: 100%;
+          font-size: 0.95rem;
+          padding: 0.65rem 1rem;
+        }
+        .total-due {
+          font-size: 0.95rem;
+          margin-bottom: 1rem;
+        }
+      }
+      @media (max-width: 320px) {
+        .container {
+          padding: 1rem 0.75rem;
+          margin: 1rem auto;
+        }
+        th,
+        td {
+          padding: 0.3rem 0.4rem;
+          font-size: 0.75rem;
+        }
+        .invoice-title {
+          font-size: 0.9rem;
+          margin-bottom: 0.75rem;
+        }
+        .total-due {
+          font-size: 0.9rem;
+          justify-content: center;
+        }
+        .pay-button {
+          padding: 0.6rem 0.9rem;
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("tr.clickable-row").forEach((row) => {
+          row.addEventListener("click", () => {
+            // Use the row's ID (which is the patient ID) for navigation
+            window.location.href = `pat${row.id}.html`;
+          });
+        });
+      });
+  // Shared Header Script
+  document.addEventListener("DOMContentLoaded", function () {
+    const hamburger = document.querySelector(".shared-header .hamburger");
+    const dropdown = document.querySelector(".shared-header .dropdown");
+
+    hamburger.addEventListener("click", () => {
+      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+    });
+
+    // Close dropdown if clicking outside
+    window.addEventListener("click", (e) => {
+      if (
+        !hamburger.contains(e.target) &&
+        !dropdown.contains(e.target)
+      ) {
+        dropdown.style.display = "none";
+      }
+    });
+  });
+
+    </script>
+  </head>
+  <body>
+    <div class="shared-header">
+  <div class="nav-left">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1><a href="index.html">Diaspora Health Connect</a></h1>
+  </div>
+  <div class="nav-right">
+    <div class="user-info">
+      <span class="user-icon">👤</span>
+      <span class="user-name">John Doe</span>
+      <span class="wallet-balance">$1,750.00</span>
+    </div>
+    <button class="hamburger" aria-label="Menu">☰</button>
+  </div>
+  <div class="dropdown">
+    <div class="dropdown-content">
+      <button onclick="history.back()">← Back</button>
+      <div class="dropdown-item">
+        <span class="user-icon">👤</span>
+        <span>John Doe</span>
+      </div>
+      <div class="dropdown-item">
+        <span>Wallet:</span>
+        <span class="wallet-balance">$1,750.00</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="container">
+      <div class="wallet">
+        <div class="wallet-balance">Wallet Balance: $1750.00</div>
+        <a href="card.html"><button>Add Funds</button></a>
+      </div>
+
+      <div class="invoice-title">Payment Invoice</div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Invoice #</th>
+              <th>Date</th>
+              <th>Patient Name</th>
+              <th>Description</th>
+              <th>Amount (USD)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="00123" class="clickable-row">
+              <td>#INV-1001</td>
+              <td>2025-05-12</td>
+              <td>Mary Johnson</td>
+              <td>Malaria Treatment</td>
+              <td>$200.00</td>
+              <td class="status-paid">Paid</td>
+            </tr>
+            <tr id="00456" class="clickable-row">
+              <td>#INV-1002</td>
+              <td>2025-05-14</td>
+              <td>David Kimani</td>
+              <td>Diabetes Checkup</td>
+              <td>$50.00</td>
+              <td class="status-pending">Pending</td>
+            </tr>
+            <tr id="00789" class="clickable-row">
+              <td>#INV-1003</td>
+              <td>2025-05-15</td>
+              <td>Fatou Diallo</td>
+              <td>Fracture Surgery</td>
+              <td>$1,500.00</td>
+              <td class="status-unpaid">Unpaid</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="total-due">
+        <span>Total Due: $1,550.00</span>
+      </div>
+      <a style="text-decoration: none" href="successful.html"
+        ><button class="pay-button">Pay Now</button></a
+      >
+    </div>
+  </body>
+</html>

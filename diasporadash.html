@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diaspora Dashboard</title>
+    <style>
+      /* Mobile first base */
+      body {
+        font-family: sans-serif;
+        background-color: #f4f7fa;
+        margin: 0;
+        padding: 0.5rem;
+        box-sizing: border-box;
+      }
+      .header {
+        background-color: #1d4ed8;
+        color: white;
+        padding: 1rem 0.75rem;
+        text-align: center;
+      }
+      h1 > a {
+        text-decoration: none;
+        color: white;
+        font-size: 1.25rem;
+        display: inline-block;
+      }
+      .dashboard {
+        max-width: 100%;
+        margin: 1rem auto;
+        padding: 1rem;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+        overflow-x: auto;
+      }
+      h2 {
+        text-align: center;
+        color: #1d4ed8;
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px; /* keeps horizontal scroll on small screens */
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 0.75rem;
+        text-align: left;
+        font-size: 0.9rem;
+      }
+      th {
+        background-color: #1d4ed8;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      .payment-btn {
+        background-color: #1d4ed8;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        margin-top: 2rem;
+        display: inline-block;
+      }
+      .payment-btn:hover {
+        background-color: #163eb5;
+        transform: scale(1.05);
+      }
+
+      /* Medium screens and up */
+      @media (min-width: 480px) {
+        body {
+          padding: 1rem;
+        }
+        h1 > a {
+          font-size: 1.5rem;
+        }
+        h2 {
+          font-size: 1.5rem;
+        }
+        th,
+        td {
+          font-size: 1rem;
+          padding: 0.75rem;
+        }
+        .dashboard {
+          max-width: 90%;
+          margin: 2rem auto;
+          padding: 1.5rem;
+        }
+      }
+      @media (min-width: 768px) {
+        h2 {
+          font-size: 1.75rem;
+        }
+        table {
+          min-width: 100%;
+        }
+      }
+      @media (max-width: 320px) {
+        /* very tiny devices */
+        h1 > a {
+          font-size: 1.1rem;
+        }
+        h2 {
+          font-size: 1.1rem;
+        }
+        th,
+        td {
+          padding: 0.5rem;
+          font-size: 0.8rem;
+        }
+        .payment-btn {
+          font-size: 0.9rem;
+          padding: 0.6rem 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1><a href="index.html">Diaspora Health Connect</a></h1>
+    </div>
+
+    <h2>Patient Medical Records</h2>
+    <div class="dashboard">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Patient ID</th>
+            <th>Diagnosis / Treatment</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2025-05-01</td>
+            <td>#00123</td>
+            <td>Malaria - Treatment completed</td>
+            <td>Completed</td>
+          </tr>
+          <tr>
+            <td>2025-05-03</td>
+            <td>#00456</td>
+            <td>Diabetes - Monthly checkup</td>
+            <td>Ongoing</td>
+          </tr>
+          <tr>
+            <td>2025-05-10</td>
+            <td>#00789</td>
+            <td>Fracture - Surgery scheduled</td>
+            <td>Pending</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="text-align: center">
+      <button class="payment-btn" onclick="location.href='payment.html'">
+        💳 Make Payment
+      </button>
+    </div>
+  </body>
+</html>
